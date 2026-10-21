@@ -1,0 +1,211 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+
+/* ==========================================================================
+   PayPilot design tokens — the single source of truth for colour, type and shape.
+   Components must use the Tailwind names mapped below, never raw hex values.
+   ========================================================================== */
+:root {
+  /* Brand */
+  --pp-navy: #0b1220;
+  --pp-navy-deep: #111c32;
+  --pp-blue: #2563eb;
+  --pp-teal: #14b8a6;
+  --pp-teal-soft: #ccfbf1;
+
+  /* Neutrals */
+  --pp-bg: #f5f7fb;
+  --pp-surface: #ffffff;
+  --pp-text: #111827;
+  --pp-text-muted: #64748b;
+  --pp-border: #e2e8f0;
+
+  /* Semantic */
+  --pp-success: #15803d;
+  --pp-warning: #b45309;
+  --pp-danger: #b91c1c;
+  --pp-info: #1d4ed8;
+
+  /* Derived tints (computed from the palette above, not new colours) */
+  --pp-blue-hover: color-mix(in srgb, var(--pp-blue) 86%, black);
+  --pp-danger-hover: color-mix(in srgb, var(--pp-danger) 86%, black);
+  --pp-success-soft: color-mix(in srgb, var(--pp-success) 10%, var(--pp-surface));
+  --pp-warning-soft: color-mix(in srgb, var(--pp-warning) 10%, var(--pp-surface));
+  --pp-danger-soft: color-mix(in srgb, var(--pp-danger) 8%, var(--pp-surface));
+  --pp-info-soft: color-mix(in srgb, var(--pp-info) 8%, var(--pp-surface));
+  --pp-border-strong: color-mix(in srgb, var(--pp-text-muted) 45%, var(--pp-surface));
+  --pp-on-navy-muted: color-mix(in srgb, var(--pp-surface) 70%, var(--pp-navy));
+  --pp-on-navy-border: color-mix(in srgb, var(--pp-surface) 14%, var(--pp-navy));
+
+  /* Shape & elevation */
+  --pp-radius-sm: 0.5rem;
+  --pp-radius: 0.75rem;
+  --pp-radius-lg: 1rem;
+  --pp-shadow-card: 0 1px 2px color-mix(in srgb, var(--pp-navy) 6%, transparent);
+  --pp-shadow-pop: 0 12px 32px -8px color-mix(in srgb, var(--pp-navy) 22%, transparent);
+  --pp-focus: var(--pp-blue);
+}
+
+@theme inline {
+  --font-sans:
+    'Inter Variable', Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --color-navy: var(--pp-navy);
+  --color-navy-deep: var(--pp-navy-deep);
+  --color-brand: var(--pp-blue);
+  --color-brand-hover: var(--pp-blue-hover);
+  --color-teal: var(--pp-teal);
+  --color-teal-soft: var(--pp-teal-soft);
+  --color-page: var(--pp-bg);
+  --color-surface: var(--pp-surface);
+  --color-ink: var(--pp-text);
+  --color-muted: var(--pp-text-muted);
+  --color-line: var(--pp-border);
+  --color-line-strong: var(--pp-border-strong);
+  --color-success: var(--pp-success);
+  --color-success-soft: var(--pp-success-soft);
+  --color-warning: var(--pp-warning);
+  --color-warning-soft: var(--pp-warning-soft);
+  --color-danger: var(--pp-danger);
+  --color-danger-hover: var(--pp-danger-hover);
+  --color-danger-soft: var(--pp-danger-soft);
+  --color-info: var(--pp-info);
+  --color-info-soft: var(--pp-info-soft);
+  --color-on-navy-muted: var(--pp-on-navy-muted);
+  --color-on-navy-line: var(--pp-on-navy-border);
+
+  --radius-sm: var(--pp-radius-sm);
+  --radius-md: var(--pp-radius);
+  --radius-lg: var(--pp-radius-lg);
+  --shadow-card: var(--pp-shadow-card);
+  --shadow-pop: var(--pp-shadow-pop);
+
+  --breakpoint-xs: 23.4375rem; /* 375px */
+}
+
+/* ---------- Typography scale ---------- */
+@utility type-display {
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.5rem);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+@utility type-page-title {
+  font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+@utility type-section {
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+  line-height: 1.25;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+}
+@utility type-card-title {
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+@utility type-body {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+@utility type-label {
+  font-size: 0.8125rem;
+  line-height: 1.25;
+  font-weight: 600;
+}
+@utility type-helper {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--pp-text-muted);
+}
+@utility type-table {
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+@utility type-money {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+@utility type-status {
+  font-size: 0.75rem;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+@utility tabular {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    background: var(--pp-bg);
+    color: var(--pp-text);
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  #root {
+    min-height: 100dvh;
+  }
+  img,
+  svg {
+    max-width: 100%;
+  }
+  :focus-visible {
+    outline: 2px solid var(--pp-focus);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  /* Focus ring that remains visible on dark surfaces */
+  .on-dark :focus-visible {
+    outline-color: var(--pp-teal);
+  }
+  ::selection {
+    background: var(--pp-teal-soft);
+    color: var(--pp-navy);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@keyframes pp-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+@keyframes pp-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
