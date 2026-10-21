@@ -22,7 +22,7 @@ services:
       - key: DJANGO_SECRET_KEY
         generateValue: true
       - key: DJANGO_ALLOWED_HOSTS
-        value: paypilot-api.onrender.com
+        value: paypilot-api-tg70.onrender.com
       - key: DATABASE_URL
         fromDatabase:
           name: paypilot-db
