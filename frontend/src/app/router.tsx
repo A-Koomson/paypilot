@@ -18,6 +18,9 @@ import { SettingsPage } from '@/features/settings/SettingsPage'
 import { AdminPage } from '@/features/admin/AdminPage'
 import { IntegrationsPage } from '@/features/paypal/IntegrationsPage'
 import { AssistantPage } from '@/features/assistant/AssistantPage'
+import { RecoveryPage } from '@/features/recovery/RecoveryPage'
+import { ReconciliationPage } from '@/features/reconciliation/ReconciliationPage'
+import { ActivityPage } from '@/features/audit/ActivityPage'
 
 function Root() {
   return (
@@ -63,6 +66,9 @@ export const routes = [
         ),
         children: [
           { path: '/app', element: merchant(<DashboardPage />) },
+          { path: '/app/recovery', element: merchant(<RecoveryPage />) },
+          { path: '/app/reconciliation', element: merchant(<ReconciliationPage />) },
+          { path: '/app/activity', element: merchant(<ActivityPage />) },
           { path: '/app/assistant', element: merchant(<AssistantPage />) },
           { path: '/app/integrations', element: merchant(<IntegrationsPage />) },
           { path: '/app/settings', element: <SettingsPage /> },

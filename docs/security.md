@@ -24,10 +24,22 @@ Credentials stay in server environment variables. Access tokens are cached serve
 
 ## Assistant
 
-- Only four read-only tools are registered. Write names are rejected even if the model asks.
+- Read tools plus `list_recovery_queue` and `draft_payment_reminder` (draft only). `send_invoice_reminder` and other writes stay forbidden.
 - Tool arguments are validated with Pydantic. Result sizes are bounded.
 - Record text is treated as untrusted. The system prompt is not the security boundary.
 - Conversations are merchant-scoped and retained for `AGENT_CONVERSATION_RETENTION_DAYS`.
+
+## Approvals and idempotency
+
+- Opening a page or sending a chat message is not approval.
+- `recovery.execute` requires `confirm=true`, a prior `approved_at`, and an idempotency key.
+- Duplicate in-flight reminder actions on the same case are rejected.
+- PayPal remind is not retried on timeout; the action is marked `uncertain`, not sent.
+
+## Audit
+
+- Events are append-only. Ordinary merchants can read their own events at `GET /api/audit/` and cannot edit them.
+- Metadata is sanitised. Tokens, passwords and OTPs are redacted.
 
 ## Production
 

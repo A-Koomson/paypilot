@@ -6,7 +6,7 @@ PayPilot helps a small business retrieve and understand its **own** PayPal sandb
 
 PayPilot is an independent product. It is **not** affiliated with, endorsed by, or sponsored by PayPal.
 
-This repository implements Phases 00–03 of the PayPal AI Hackathon 2026 brief. Later phases (reminders, invoice send, refunds, reconciliation) are not present.
+This repository implements Phases 00–07 of the PayPal AI Hackathon 2026 brief. Invoice creation and refunds are not implemented.
 
 ## What works today
 
@@ -14,9 +14,10 @@ This repository implements Phases 00–03 of the PayPal AI Hackathon 2026 brief.
 - Merchant registration, login, logout, email OTP, password recovery, email-ownership verification
 - Optional Google OAuth when client id/secret/redirect are set
 - Super-administrator second-factor policy for sellers
-- PayPal sandbox OAuth, Transaction Search, Invoicing list, idempotent sync
-- Dashboard and integration UI that stay empty until a real sync succeeds
-- Read-only assistant with four tools: transactions, invoices, record detail, payment summary
+- PayPal sandbox OAuth, Transaction Search, Invoicing list, official invoice reminder, idempotent sync
+- Dashboard, recovery queue, reconciliation exceptions and merchant audit history
+- Assistant that can retrieve records and prepare reminder drafts; sending still needs explicit approval
+- Deterministic recovery ranking and payment-to-order matching
 
 ## What does not work until you add credentials
 
@@ -83,6 +84,9 @@ Create a super administrator with `python manage.py createsuperuser`.
 - [Security](docs/security.md)
 - [Testing](docs/testing.md)
 - [Deployment](docs/deployment.md)
+- [Operations](docs/operations.md)
+- [Known limitations](docs/known-limitations.md)
+- [Phase 00–03 audit](docs/phase-audit.md)
 
 ## Licence
 

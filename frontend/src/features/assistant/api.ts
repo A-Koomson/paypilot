@@ -11,6 +11,7 @@ export interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
   citations: { type: string; id?: string; source_id?: string; tool?: string }[]
+  tool_name?: string
   created_at: string
 }
 

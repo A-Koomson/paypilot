@@ -30,7 +30,7 @@ Node 22.11 workers need `--experimental-require-module` for jsdom 27 (set in `vi
 
 ## What the suite covers
 
-Authentication and lockout, OTP expiry/attempts, CSRF on anonymous POSTs, admin policy, merchant isolation, PayPal success/error/pagination/idempotency, IDOR on transactions, deterministic summaries, forbidden tools, prompt-injection write attempts, conversation isolation, production settings.
+Authentication and lockout, OTP expiry/attempts, CSRF on anonymous POSTs, admin policy, merchant isolation, PayPal success/error/pagination/idempotency, IDOR on transactions, deterministic summaries, forbidden tools, prompt-injection write attempts, conversation isolation, recovery ranking/approval/execution, reconciliation matching and resolutions, policy/idempotency/audit, production settings.
 
 ## What is not claimed
 

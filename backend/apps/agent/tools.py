@@ -15,6 +15,8 @@ from pydantic import BaseModel, Field, ValidationError, field_validator
 from apps.core.exceptions import ApiError
 from apps.integrations.models import PayPalInvoice, PayPalTransaction
 from apps.merchants.models import Merchant
+from apps.recovery.models import RecoveryCase
+from apps.recovery.services import list_queue, prepare_draft, refresh_cases, serialize_action
 
 MAX_ROWS = 25
 
@@ -67,6 +69,14 @@ class DetailQuery(BaseModel):
 class InvoiceQuery(BaseModel):
     status: str | None = Field(default=None, max_length=32)
     limit: int = Field(default=20, ge=1, le=MAX_ROWS)
+
+
+class RecoveryQueueQuery(BaseModel):
+    limit: int = Field(default=10, ge=1, le=MAX_ROWS)
+
+
+class DraftReminderQuery(BaseModel):
+    invoice_id: UUID
 
 
 def _money(amount: Decimal, currency: str) -> dict:
@@ -190,6 +200,32 @@ def get_payment_details(merchant: Merchant, args: DetailQuery) -> dict:
     raise ApiError("Record not found.", code="not_found", status_code=404)
 
 
+def list_recovery_queue(merchant: Merchant, args: RecoveryQueueQuery) -> dict:
+    items = list_queue(merchant)[: args.limit]
+    return {
+        "count": len(items),
+        "records": items,
+        "note": "Ranking is deterministic from overdue days, amount, status and follow-up history. This tool does not send reminders.",
+    }
+
+
+def draft_payment_reminder(merchant: Merchant, args: DraftReminderQuery) -> dict:
+    refresh_cases(merchant)
+    invoice = PayPalInvoice.objects.filter(merchant=merchant, pk=args.invoice_id).first()
+    if invoice is None:
+        raise ApiError("Record not found.", code="not_found", status_code=404)
+    case = RecoveryCase.objects.filter(merchant=merchant, invoice=invoice).first()
+    if case is None:
+        raise ApiError("That invoice is not on the recovery queue.", code="invalid_state", status_code=409)
+    action = prepare_draft(merchant, case.id, actor=merchant.user)
+    return {
+        "draft": serialize_action(action),
+        "case_id": str(case.id),
+        "sent": False,
+        "note": "Draft only. The merchant must review and approve a delivery method before anything is sent.",
+    }
+
+
 def get_invoices(merchant: Merchant, args: InvoiceQuery) -> dict:
     qs = PayPalInvoice.objects.filter(merchant=merchant)
     if args.status:
@@ -248,6 +284,18 @@ REGISTRY: dict[str, ToolSpec] = {
             InvoiceQuery,
             get_invoices,
         ),
+        ToolSpec(
+            "list_recovery_queue",
+            "List outstanding imported invoices on the revenue recovery queue, with explainable priority. Does not send anything.",
+            RecoveryQueueQuery,
+            list_recovery_queue,
+        ),
+        ToolSpec(
+            "draft_payment_reminder",
+            "Prepare a payment reminder draft from a verified invoice. Does not send, email, or call PayPal.",
+            DraftReminderQuery,
+            draft_payment_reminder,
+        ),
     )
 }
 
@@ -265,7 +313,10 @@ FORBIDDEN_TOOL_NAMES = {
 
 def execute_tool(merchant: Merchant, name: str, raw_arguments: str) -> dict:
     if name in FORBIDDEN_TOOL_NAMES or name not in REGISTRY:
-        return {"error": "tool_not_allowed", "message": "That tool is not available. This assistant is read-only."}
+        return {
+            "error": "tool_not_allowed",
+            "message": "That tool is not available. Sending, refunds and other writes require a separate merchant approval.",
+        }
     spec = REGISTRY[name]
     try:
         args = spec.schema.model_validate(json.loads(raw_arguments or "{}"))

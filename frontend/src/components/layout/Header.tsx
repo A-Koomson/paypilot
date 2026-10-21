@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { LayoutDashboard, LogOut, Menu, MessageSquareText, PlugZap, Settings, ShieldCheck, X } from 'lucide-react'
+import { CircleDollarSign, GitCompare, LayoutDashboard, LogOut, Menu, MessageSquareText, PlugZap, ScrollText, Settings, ShieldCheck, X } from 'lucide-react'
 import { Container, Logo, buttonStyles } from '@/components/ui'
 import { cn } from '@/lib/cn'
 import { PayPalStatusPill, type PayPalPillState } from './PayPalStatusPill'
@@ -18,7 +18,10 @@ function appNav(user: HeaderUser): NavItem[] {
   }
   return [
     { to: '/app', label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/app/recovery', label: 'Recovery', icon: CircleDollarSign },
+    { to: '/app/reconciliation', label: 'Exceptions', icon: GitCompare },
     { to: '/app/assistant', label: 'Assistant', icon: MessageSquareText },
+    { to: '/app/activity', label: 'Activity', icon: ScrollText },
     { to: '/app/integrations', label: 'PayPal', icon: PlugZap },
   ]
 }
@@ -66,7 +69,7 @@ export function Header({ user, paypal, onLogout }: HeaderProps) {
           <Logo onDark />
         </Link>
 
-        <nav aria-label="Main" className="ml-4 hidden items-center gap-1 md:flex">
+        <nav aria-label="Main" className="ml-4 hidden items-center gap-0.5 overflow-x-auto lg:flex">
           {user
             ? items.map((item) => (
                 <NavLink key={item.to} to={item.to} end={item.to === '/app'} className={desktopLink}>
@@ -104,7 +107,7 @@ export function Header({ user, paypal, onLogout }: HeaderProps) {
           )}
           <button
             type="button"
-            className="grid size-11 place-items-center rounded-md hover:bg-white/10 md:hidden"
+            className="grid size-11 place-items-center rounded-md hover:bg-white/10 lg:hidden"
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
@@ -116,7 +119,7 @@ export function Header({ user, paypal, onLogout }: HeaderProps) {
       </Container>
 
       {mobileOpen && (
-        <div id="mobile-nav" className="border-t border-on-navy-line bg-navy-deep md:hidden">
+        <div id="mobile-nav" className="border-t border-on-navy-line bg-navy-deep lg:hidden">
           <Container className="max-h-[calc(100dvh-4rem)] space-y-1 overflow-y-auto py-3">
             {user ? (
               <>

@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     "apps.integrations",
     "apps.agent",
     "apps.audit",
+    "apps.policy",
+    "apps.recovery",
+    "apps.reconciliation",
 ]
 
 AUTH_USER_MODEL = "accounts.User"

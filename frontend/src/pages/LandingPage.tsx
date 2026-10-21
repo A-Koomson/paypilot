@@ -49,8 +49,8 @@ const capabilities: { icon: LucideIcon; title: string; body: string }[] = [
   },
   {
     icon: ShieldCheck,
-    title: 'Read-only by design',
-    body: 'The assistant cannot send reminders, create invoices, move money or issue refunds. It can only recommend.',
+    title: 'Approval before sending',
+    body: 'The assistant can prepare a reminder draft. Sending uses an official PayPal or SMTP path only after explicit merchant approval.',
   },
   {
     icon: Lock,
@@ -59,15 +59,14 @@ const capabilities: { icon: LucideIcon; title: string; body: string }[] = [
   },
 ]
 
-const roadmap = [
-  'Revenue recovery prioritisation',
+const available = [
+  'Revenue recovery queue',
   'Approved payment reminders',
-  'Invoice creation and sending',
   'Payment-to-order reconciliation',
   'Exception management',
-  'Refund workflows with approvals',
-  'Audit and impact dashboards',
+  'Merchant audit history',
 ]
+const roadmap = ['Invoice creation and sending', 'Refund workflows with approvals']
 
 function IllustrativeConversation() {
   return (
@@ -169,11 +168,18 @@ export function LandingPage() {
 
       <section id="roadmap" className="scroll-mt-20 py-14 sm:py-20">
         <Container>
-          <h2 className="type-section">Roadmap</h2>
+          <h2 className="type-section">What is available — and what is not</h2>
           <p className="type-body mt-2 max-w-2xl text-muted">
-            These are planned, <strong className="text-ink">not available today</strong>. The current build is read-only.
+            Recovery, reconciliation and audit are in this build. Invoice creation and refunds are still planned.
           </p>
           <ul className="mt-6 flex flex-wrap gap-2">
+            {available.map((item) => (
+              <li key={item}>
+                <Badge tone="teal" dot={false}>
+                  {item} · available
+                </Badge>
+              </li>
+            ))}
             {roadmap.map((item) => (
               <li key={item}>
                 <Badge tone="neutral" dot={false}>

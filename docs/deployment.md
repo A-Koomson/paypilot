@@ -1,6 +1,14 @@
 # Deployment
 
-Target: **Vercel** (frontend) + **Render** (API) + **Neon** (Postgres). Free tiers sleep, cap hours and can change — do not treat them as always-on or permanently free.
+Target in this repo: **Cloudflare Pages** (frontend) + **Render** (API + Postgres). The original brief also mentioned Vercel and Neon; those remain valid alternatives, not the live hosts.
+
+Live:
+
+- App: https://paypilot-dk1.pages.dev
+- API: https://paypilot-api-tg70.onrender.com
+- Push to `main` deploys the SPA via `.github/workflows/pages-deployment.yaml` and the API via Render `autoDeploy`.
+
+Free tiers sleep, cap hours and can change — do not treat them as always-on or permanently free. Render free Postgres expires 30 days after creation.
 
 The app also runs entirely locally via Docker Compose.
 

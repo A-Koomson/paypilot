@@ -5,6 +5,8 @@ import uuid
 from django.conf import settings
 from django.db import models
 
+from apps.merchants.models import Merchant
+
 
 class AuditEvent(models.Model):
     """Append-only record of security- and policy-relevant events.
@@ -16,6 +18,7 @@ class AuditEvent(models.Model):
     actor = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
     )
+    merchant = models.ForeignKey(Merchant, null=True, blank=True, on_delete=models.SET_NULL, related_name="audit_events")
     action = models.CharField(max_length=64)
     target_type = models.CharField(max_length=64, blank=True)
     target_id = models.CharField(max_length=64, blank=True)
@@ -28,6 +31,7 @@ class AuditEvent(models.Model):
         indexes = [
             models.Index(fields=["action", "-created_at"]),
             models.Index(fields=["actor", "-created_at"]),
+            models.Index(fields=["merchant", "-created_at"]),
         ]
 
     def __str__(self) -> str:

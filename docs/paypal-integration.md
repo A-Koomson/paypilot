@@ -32,11 +32,12 @@ Do not mix sandbox and live credentials. Phase 02/03 are intended for sandbox on
 | Transactions | `GET` | `/v1/reporting/transactions` | Requires the app permission **Transaction Search**. Date window ≤ 31 days; we walk `PAYPAL_SYNC_LOOKBACK_DAYS` in 31-day pages. |
 | Invoices (list) | `GET` | `/v2/invoicing/invoices` | Requires **Invoicing**. |
 | Invoice (detail) | `GET` | `/v2/invoicing/invoices/{id}` | Implemented on the client; list payload is enough for sync. |
+| Invoice reminder | `POST` | `/v2/invoicing/invoices/{id}/remind` | Official write. Success is HTTP 204. Not retried. Custom subject/note are not honoured by PayPal. Limit: two reminders per invoice per day. Requires Invoicing **readwrite**. |
 
 ## Endpoints not used (and why)
 
 - **Orders v2** (`/v2/checkout/orders`) — creates and captures checkout orders. It is not a historical activity feed, so `get_orders` is not registered.
-- Invoice send / remind / create, refunds, payouts, subscriptions — write or out-of-scope operations reserved for later phases.
+- Invoice send / create, refunds, payouts, subscriptions — out of scope. Refunds are not activated.
 
 ## Record mapping
 

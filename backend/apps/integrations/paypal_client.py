@@ -6,6 +6,7 @@ Only these operations are implemented (see docs/paypal-integration.md):
 * GET  /v1/reporting/transactions — Transaction Search
 * GET  /v2/invoicing/invoices — list invoices
 * GET  /v2/invoicing/invoices/{id} — invoice detail
+* POST /v2/invoicing/invoices/{id}/remind — official invoice reminder (write; not retried)
 
 No other endpoints are called. Tokens never leave this module.
 """
@@ -170,3 +171,24 @@ def get_invoice(invoice_id: str) -> dict[str, Any]:
         headers=_auth_headers(),
     )
     return response.json()
+
+
+def remind_invoice(invoice_id: str) -> int:
+    """POST /v2/invoicing/invoices/{id}/remind.
+
+    Official Invoicing v2 reminder. Success is HTTP 204. Not retried: the call is not
+    idempotent and PayPal ignores custom subject/note.
+    Documented at https://developer.paypal.com/api/invoicing/v2/invoices-remind
+    """
+    invoice_id = (invoice_id or "").strip()
+    if not invoice_id:
+        raise PayPalError(details={"action": "remind_invoice"})
+    response = _request(
+        "POST",
+        f"{api_host()}/v2/invoicing/invoices/{invoice_id}/remind",
+        action="remind_invoice",
+        retry_safe=False,
+        headers={**_auth_headers(), "Content-Type": "application/json"},
+        json={"send_to_recipient": True, "send_to_invoicer": True},
+    )
+    return response.status_code

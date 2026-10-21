@@ -14,6 +14,9 @@ urlpatterns = [
     path("api/", include("apps.merchants.urls")),
     path("api/", include("apps.integrations.urls")),
     path("api/", include("apps.agent.urls")),
+    path("api/", include("apps.recovery.urls")),
+    path("api/", include("apps.reconciliation.urls")),
+    path("api/", include("apps.audit.urls")),
 ]
 
 if getattr(settings, "API_DOCS_ENABLED", False):

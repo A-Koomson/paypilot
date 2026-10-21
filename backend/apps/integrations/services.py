@@ -241,9 +241,13 @@ def synchronise(merchant: Merchant) -> dict:
     conn.save()
     if conn.transactions_imported or conn.invoices_imported:
         merchant.advance_onboarding(OnboardingStatus.SYNCED)
+    from apps.recovery.services import refresh_cases
+
+    refresh_cases(merchant)
     audit.record(
         "paypal.synced",
         actor=merchant.user,
+        merchant=merchant,
         target_type="merchant",
         target_id=merchant.id,
         metadata={

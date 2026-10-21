@@ -4,6 +4,8 @@ import { Building2, CheckCircle2, Circle, MessageSquareText, PlugZap } from 'luc
 import { Alert, Badge, Card, CardBody, CardHeader, DataTable, EmptyState, ErrorState, LoadingRegion, Skeleton, buttonStyles } from '@/components/ui'
 import { useSession } from '@/features/auth/session'
 import { fetchInvoices, fetchPayPalStatus, fetchTransactions } from '@/features/paypal/api'
+import { fetchRecoveryQueue } from '@/features/recovery/api'
+import { fetchExceptions } from '@/features/reconciliation/api'
 import { formatDateTime, formatMoney } from '@/lib/format'
 
 const STATUS_LABEL: Record<string, string> = {
@@ -20,6 +22,8 @@ export function DashboardPage() {
   const status = useQuery({ queryKey: ['paypal', 'status'], queryFn: fetchPayPalStatus })
   const txns = useQuery({ queryKey: ['paypal', 'txns'], queryFn: fetchTransactions })
   const invoices = useQuery({ queryKey: ['paypal', 'invoices'], queryFn: fetchInvoices })
+  const recovery = useQuery({ queryKey: ['recovery', 'dashboard'], queryFn: () => fetchRecoveryQueue({ sort: 'priority' }) })
+  const exceptions = useQuery({ queryKey: ['recon', 'dashboard'], queryFn: () => fetchExceptions({ status: 'open' }) })
 
   const paypalState = status.data?.state ?? me?.paypal?.state ?? 'not_configured'
   const profileDone = Boolean(merchant?.profile_complete)
@@ -44,6 +48,32 @@ export function DashboardPage() {
         <Alert tone="warning" title="Confirm your email address" action={<Link to="/verify-email" className={buttonStyles({ variant: 'secondary', size: 'sm' })}>Confirm</Link>}>
           Email ownership is separate from two-factor authentication.
         </Alert>
+      )}
+
+      {(recovery.data || exceptions.data) && (
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Card>
+            <CardHeader
+              title="Outstanding recoveries"
+              description="From imported invoices only."
+              action={<Link to="/app/recovery" className={buttonStyles({ variant: 'secondary', size: 'sm' })}>Open queue</Link>}
+            />
+            <CardBody>
+              <p className="type-money text-ink">{recovery.data?.results.length ?? 0} open</p>
+              <p className="type-helper mt-1">Reminders sent are not treated as recovered revenue.</p>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader
+              title="Exceptions needing attention"
+              description="Uncertain matches stay open."
+              action={<Link to="/app/reconciliation" className={buttonStyles({ variant: 'secondary', size: 'sm' })}>Review</Link>}
+            />
+            <CardBody>
+              <p className="type-money text-ink">{exceptions.data?.results.length ?? 0} open</p>
+            </CardBody>
+          </Card>
+        </div>
       )}
 
       <Card>

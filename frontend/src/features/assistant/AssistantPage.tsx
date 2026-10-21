@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Loader2, Plus, Send } from 'lucide-react'
+import { Copy, Loader2, Plus, Send } from 'lucide-react'
 import { Alert, Button, Card, CardBody, EmptyState, ErrorState, LoadingRegion, Skeleton, Textarea } from '@/components/ui'
 import { useSession } from '@/features/auth/session'
 import { ApiError } from '@/lib/api'
@@ -12,7 +12,8 @@ const SUGGESTIONS = [
   'Which payments are pending?',
   'Show my available invoice information.',
   'Summarise my payment activity this month.',
-  'Which records need further investigation?',
+  'Which invoices are outstanding on the recovery queue?',
+  'Draft a reminder for my oldest unpaid invoice.',
 ]
 
 export function AssistantPage() {
@@ -86,7 +87,9 @@ export function AssistantPage() {
       <div className="space-y-4">
         <div className="hidden lg:block">
           <h1 className="type-page-title">Assistant</h1>
-          <p className="type-body mt-1 text-muted">Read-only. Totals come from backend tools over your imported PayPal records.</p>
+          <p className="type-body mt-1 text-muted">
+            Totals come from backend tools. The assistant can prepare a reminder draft; sending still needs your approval on Recovery.
+          </p>
         </div>
         {me?.paypal?.state !== 'connected' && me?.paypal?.state !== 'limited' && (
           <Alert tone="warning" title="No verified PayPal records yet">
@@ -133,10 +136,22 @@ export function AssistantPage() {
                       <p className="mb-1 text-xs font-semibold tracking-wide text-teal uppercase">From your synced records</p>
                     )}
                     <p className="whitespace-pre-wrap">{m.content}</p>
+                    {m.role === 'assistant' && m.tool_name && (
+                      <p className="type-helper mt-2">Tools used: {m.tool_name}</p>
+                    )}
                     {m.role === 'assistant' && m.citations?.length > 0 && (
                       <p className="type-helper mt-2">
                         Sources: {m.citations.map((c) => c.source_id || c.id).filter(Boolean).join(', ')}
                       </p>
+                    )}
+                    {m.role === 'assistant' && (
+                      <button
+                        type="button"
+                        className="mt-2 inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-navy"
+                        onClick={() => void navigator.clipboard.writeText(m.content)}
+                      >
+                        <Copy className="size-3.5" aria-hidden /> Copy response
+                      </button>
                     )}
                   </li>
                 ))}
@@ -167,7 +182,7 @@ export function AssistantPage() {
                 <Send className="size-4" aria-hidden /> Send
               </Button>
             </form>
-            <p className="type-helper">The assistant cannot send reminders, create invoices, move money or issue refunds.</p>
+            <p className="type-helper">The assistant cannot send reminders, refunds or invoices. Those writes need a separate approval.</p>
           </CardBody>
         </Card>
       </div>

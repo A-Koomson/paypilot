@@ -23,12 +23,14 @@ def record(
     action: str,
     *,
     actor=None,
+    merchant=None,
     target_type: str = "",
     target_id: str = "",
     metadata: dict[str, Any] | None = None,
 ) -> AuditEvent:
     return AuditEvent.objects.create(
         actor=actor if getattr(actor, "pk", None) else None,
+        merchant=merchant if getattr(merchant, "pk", None) else None,
         action=action,
         target_type=target_type,
         target_id=str(target_id),

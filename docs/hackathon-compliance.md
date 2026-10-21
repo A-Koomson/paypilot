@@ -29,6 +29,8 @@ Sponsor AI toolkits are optional. Using one does not guarantee an award. PayPilo
 
 ## What is deliberately unfinished
 
-Phases 04+ (reminders, invoice send, refunds, reconciliation, recovery workflows) are not implemented. The assistant will refuse those actions.
+Invoice creation and refunds are not implemented. The assistant can draft a reminder but cannot send it; sending is a separate approved action.
 
-Live PayPal sandbox verification is skipped in CI unless `PAYPAL_LIVE_TEST_CLIENT_ID` and `PAYPAL_LIVE_TEST_CLIENT_SECRET` are set. Mocked tests cover the integration.
+Live PayPal sandbox verification is skipped in CI unless `PAYPAL_LIVE_TEST_CLIENT_ID` and `PAYPAL_LIVE_TEST_CLIENT_SECRET` are set. Mocked tests cover the integration. A PayPal remind success is only claimed when the official endpoint returns HTTP 204.
+
+The required YouTube demo (under three minutes) has not been recorded in this repository.

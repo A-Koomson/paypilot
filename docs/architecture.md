@@ -1,13 +1,15 @@
 # Architecture
 
 ```
-Browser (Vite / Vercel)
-    same-origin /api  ──rewrite──►  Django API (local / Render)
+Browser (Vite / Cloudflare Pages)
+    cross-site cookies  ──►  Django API (local / Render)
                                          │
-                         PostgreSQL (local Docker / Neon)
+                         PostgreSQL (local Docker / Render)
                          PayPal REST (sandbox)
                          OpenAI-compatible LLM
 ```
+
+Live hosts: `https://paypilot-dk1.pages.dev` and `https://paypilot-api-tg70.onrender.com`.
 
 ## Backend (`backend/`)
 
@@ -18,16 +20,19 @@ Browser (Vite / Vercel)
 | `merchants` | Tenant profile |
 | `integrations` | PayPal client, sync, imported records |
 | `agent` | Conversations, tool registry, provider, runner |
-| `audit` | Append-only sanitised events |
+| `audit` | Append-only sanitised events (merchant-visible) |
+| `policy` | Central authorisation and idempotency keys |
+| `recovery` | Outstanding invoice queue, drafts, approval, execution |
+| `reconciliation` | Internal orders, matching, exceptions, resolution history |
 
-Views call services. Services call clients. The LLM never executes SQL or HTTP itself.
+Views call services. Services call clients. The LLM never executes SQL or HTTP itself. Sending a reminder is a separate approved HTTP action, not a model-invoked write.
 
 ## Frontend (`frontend/`)
 
-- `components/ui` + `components/layout` — design system
-- `features/{auth,dashboard,paypal,assistant,settings,admin}`
+- `components/ui` + `components/layout` — navy / blue / teal design system
+- `features/{auth,dashboard,paypal,assistant,recovery,reconciliation,audit,settings,admin}`
 - `lib/api.ts` — cookies, CSRF, error envelope
 
-## Extension points (not implemented)
+## Sensitive writes
 
-Reminders, invoice send, refunds, reconciliation and recovery queues should become new services + audited write tools with explicit approval, not new responsibilities on the current read-only registry.
+`apps.policy.authorization.authorize` checks authentication, merchant ownership, supported action, eligibility, amount/currency and explicit approval. `IdempotencyKey` prevents replay of `recovery.execute`.

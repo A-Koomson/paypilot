@@ -45,6 +45,7 @@ class ConversationDetailView(APIView):
                 "role": m.role,
                 "content": m.content,
                 "citations": m.citations,
+                "tool_name": m.tool_name,
                 "created_at": m.created_at,
             }
             for m in convo.messages.exclude(role="tool")

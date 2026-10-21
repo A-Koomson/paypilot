@@ -89,6 +89,7 @@ describe('layout', () => {
       />,
     )
     expect(screen.getAllByRole('link', { name: 'Assistant' }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('link', { name: 'Recovery' }).length).toBeGreaterThan(0)
     expect(screen.getByRole('link', { name: /paypal not set up/i })).toBeInTheDocument()
     expect(screen.queryByText(/paypal connected/i)).not.toBeInTheDocument()
   })
