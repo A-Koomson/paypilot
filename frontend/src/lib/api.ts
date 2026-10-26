@@ -6,6 +6,12 @@
 
 const BASE = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '')
 
+/** Absolute API URL. Needed for top-level navigations (Google OAuth) when the SPA is on another origin. */
+export function apiUrl(path: string): string {
+  const normalised = path.startsWith('/') ? path : `/${path}`
+  return `${BASE}${normalised}`
+}
+
 export class ApiError extends Error {
   readonly status: number
   readonly code: string

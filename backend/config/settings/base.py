@@ -136,6 +136,8 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = env_bool("EMAIL_USE_TLS", True)
 EMAIL_TIMEOUT = env_int("EMAIL_TIMEOUT", 10)
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", "PayPilot <no-reply@localhost>")
+# HTTPS send path. Prefer this on hosted platforms that block outbound SMTP.
+RESEND_API_KEY = env("RESEND_API_KEY", "")
 
 # --- PayPal (server-side only) ---------------------------------------------------
 PAYPAL_CLIENT_ID = env("PAYPAL_CLIENT_ID", "")

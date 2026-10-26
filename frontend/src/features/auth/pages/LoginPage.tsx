@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Alert, Button, Card, CardBody, Input, buttonStyles } from '@/components/ui'
-import { ApiError } from '@/lib/api'
+import { ApiError, apiUrl } from '@/lib/api'
 import { loginWithPassword } from '../api'
 import { useSession } from '../session'
 
@@ -63,7 +63,7 @@ export function LoginPage() {
             Email me a sign-in code
           </Link>
           {config?.google_enabled && (
-            <a href="/api/auth/google/start/" className={buttonStyles({ variant: 'secondary', className: 'w-full' })}>
+            <a href={apiUrl('/api/auth/google/start/')} className={buttonStyles({ variant: 'secondary', className: 'w-full' })}>
               Continue with Google
             </a>
           )}

@@ -13,6 +13,7 @@ from .base import (
     CSRF_TRUSTED_ORIGINS,
     EMAIL_HOST,
     FRONTEND_URL,
+    RESEND_API_KEY,
     SECRET_KEY,
 )
 
@@ -60,7 +61,7 @@ SESSION_COOKIE_SAMESITE = env("SESSION_COOKIE_SAMESITE", "Lax")
 CSRF_COOKIE_SAMESITE = SESSION_COOKIE_SAMESITE
 
 # --- Email: never pretend delivery happened ---------------------------------------------------
-if EMAIL_HOST:
+if EMAIL_HOST or RESEND_API_KEY:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     EMAIL_DELIVERY_MODE = "smtp"
 else:
